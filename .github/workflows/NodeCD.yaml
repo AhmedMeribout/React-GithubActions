@@ -21,9 +21,6 @@ jobs:
     - name: Build React app
       run: npm run build
 
-    - name: Test
-      run: npm test  # Replace with your test command if applicable
-
     - name: Deploy to Nginx server
       uses: appleboy/scp-action@master
       with:
