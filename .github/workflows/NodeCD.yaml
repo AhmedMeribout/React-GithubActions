@@ -46,6 +46,4 @@ jobs:
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
           # Check if npm and pm2 are available
           which npm || { echo "npm is not installed"; exit 1; }
-          which pm2 || { echo "pm2 is not installed"; exit 1; }
-          npm install --only=prod
-          pm2 restart server
+
