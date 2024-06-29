@@ -11,7 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploy using ssh
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Adjust Node.js version as per your project requirements
+
+    - name: Install dependencies
+      run: |
+        cd apps/React-GithubActions
+        npm install --only=prod
+
+    - name: Build React app
+      run: |
+        cd apps/React-GithubActions
+        npm run build
+
+    - name: Deploy using SSH
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -19,16 +37,5 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
-          cd ~/apps/API-GithubActions/
-          pwd
-          git pull
-          git status
-          # Ensure npm and pm2 are in the PATH
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-          # Check if npm and pm2 are available
-          which npm || { echo "npm is not installed"; exit 1; }
-          which pm2 || { echo "pm2 is not installed"; exit 1; }
-          npm install --only=prod
-          pm2 restart server
+          sudo mv ~/apps/React-GithubActions/dist /var/www/ReactActions/
+
