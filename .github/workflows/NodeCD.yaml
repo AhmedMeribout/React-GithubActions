@@ -43,6 +43,6 @@ jobs:
           git status
           npm run build
           # Move dist directory to /var/www/ReactActions
-          #mkdir -p /var/www/ReactActions
-          #mv dist /var/www/ReactActions
+          mkdir -p /var/www/ReactActions
+          mv dist /var/www/ReactActions
 
