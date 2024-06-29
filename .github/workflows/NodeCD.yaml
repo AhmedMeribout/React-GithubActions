@@ -17,7 +17,7 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '20'
+        node-version: '14'  # Adjust to a valid Node.js version
 
     - name: Install dependencies
       run: npm install
@@ -34,17 +34,17 @@ jobs:
         port: 22
         script: |
           cd ~/apps/React-GithubActions/
-          pwd
           git pull
           git status
-          npm run build
           # Move dist directory to /var/www/ReactActions
           mkdir -p /var/www/ReactActions
           mv dist /var/www/ReactActions
-          # Ensure npm and pm2 are in the PATH
+          # Ensure npm is in the PATH
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-          # Check if npm and pm2 are available
+          # Check if npm is available
           which npm || { echo "npm is not installed"; exit 1; }
-
+          
+          # Optionally, restart server using pm2
+          # pm2 restart server
