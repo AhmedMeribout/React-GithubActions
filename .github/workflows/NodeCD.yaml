@@ -11,23 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Check out repository
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
+    - name: Install Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '20'  # Adjust Node.js version as per your project requirements
+        node-version: '20'
 
     - name: Install dependencies
-      run: |
-        cd apps/React-GithubActions
-        npm install --only=prod
+      run: npm install
 
-    - name: Build React app
-      run: |
-        cd apps/React-GithubActions
-        npm run build
+    - name: Build the application
+      run: npm run build
 
     - name: Deploy using SSH
       uses: appleboy/ssh-action@master
@@ -37,5 +33,19 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
-          sudo mv ~/apps/React-GithubActions/dist /var/www/ReactActions/
-
+          cd ~/apps/React-GithubActions/
+          pwd
+          git pull
+          git status
+          # Move dist directory to /var/www/ReactActions
+          mkdir -p /var/www/ReactActions
+          mv dist /var/www/ReactActions
+          # Ensure npm and pm2 are in the PATH
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+          # Check if npm and pm2 are available
+          which npm || { echo "npm is not installed"; exit 1; }
+          which pm2 || { echo "pm2 is not installed"; exit 1; }
+          npm install --only=prod
+          pm2 restart server
